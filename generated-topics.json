@@ -133,5 +133,6 @@
   "Understanding Validation Set",
   "Understanding Early Stopping",
   "AI in Architecture: Design Generation",
-  "Understanding ROC Curves and AUC"
+  "Understanding ROC Curves and AUC",
+  "Understanding Bias-Variance Tradeoff"
 ]
