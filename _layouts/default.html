@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-JZE93KJLKK"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-JZE93KJLKK');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if page.title %}{{ page.title }} | {% endif %}{{ site.title }}</title>
+    <meta name="description" content="{% if page.description %}{{ page.description }}{% else %}{{ site.description }}{% endif %}">
+
+    <!-- Theme (set before paint to avoid flash) -->
+    <script>
+      (function(){
+        try {
+          var t = localStorage.getItem('theme');
+          if (!t) t = 'dark';
+          document.documentElement.setAttribute('data-theme', t);
+        } catch(e) { document.documentElement.setAttribute('data-theme','light'); }
+      })();
+    </script>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23ea580c'/%3E%3Cpath d='M9 21l4-10h2l4 10h-2.2l-1.2-3.2h-3.2L11.2 21H9zm3.4-4.9h2.4l-1.2-3.3-1.2 3.3z' fill='white'/%3E%3C/svg%3E">
+
+    <!-- RSS feed -->
+    <link type="application/atom+xml" rel="alternate" href="{{ '/feed.xml' | relative_url }}" title="{{ site.title }}">
+
+    <!-- Preconnect to external resources for performance -->
+    <link rel="preconnect" href="https://www.googletagmanager.com">
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com">
+
+    <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
+    <link rel="stylesheet" href="{{ '/assets/css/seo-enhancements.css' | relative_url }}">
+    {% seo %}
+
+    <!-- Structured Data for Guides -->
+    {% if page.layout == "guide" %}
+        {% include guide-schema.html %}
+    {% endif %}
+</head>
+<body>
+    {% include header.html %}
+
+    <main class="main-content">
+        {{ content }}
+    </main>
+
+    {% include footer.html %}
+
+    <script src="{{ '/assets/js/main.js' | relative_url }}"></script>
+</body>
+</html>

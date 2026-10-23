@@ -1,0 +1,65 @@
+---
+layout: default
+title: Browse all guides
+description: Browse and search all AI guides by topic and difficulty.
+---
+
+<div class="page-head">
+    <div class="container container-wide">
+        <h1 class="page-title">Browse guides</h1>
+        <p class="page-sub">Search {{ site.guides | size }} guides or filter by topic and difficulty.</p>
+    </div>
+</div>
+
+<div class="container container-wide">
+    <div class="explore-controls">
+        <div class="search-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>
+            </svg>
+            <input type="text" id="search" placeholder="Search guides, topics, keywords…" aria-label="Search guides" autocomplete="off">
+        </div>
+
+        <div class="filters-row">
+            <div class="filter-group" role="group" aria-label="Filter by difficulty">
+                <button class="filter-btn active" data-difficulty="all">All</button>
+                <button class="filter-btn" data-difficulty="beginner">Beginner</button>
+                <button class="filter-btn" data-difficulty="intermediate">Intermediate</button>
+                <button class="filter-btn" data-difficulty="advanced">Advanced</button>
+            </div>
+
+            <div class="topic-select" id="topic-select">
+                <button class="topic-select-btn" id="topic-select-btn" type="button" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="topic-select-label">All topics</span>
+                    <svg class="topic-select-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+                </button>
+                <div class="topic-menu" id="topic-menu" role="listbox" aria-label="Filter by topic">
+                    <button class="topic-option active" data-tag="" role="option" aria-selected="true">All topics</button>
+                    {% for tag in site.data.topics.topics %}
+                        <button class="topic-option" data-tag="{{ tag }}" role="option" aria-selected="false"><span class="label">{{ tag | replace: '-', ' ' }}</span><span class="count"></span></button>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="results-meta">
+                <span id="results-count"></span>
+                <button class="clear-filters" id="clear-filters" type="button">Clear</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="guides-grid container container-wide" id="guides-grid">
+    {% assign sorted_guides = site.guides | sort: 'date' | reverse %}
+    {% for guide in sorted_guides %}
+        {% include guide-card.html guide=guide %}
+    {% endfor %}
+</div>
+
+<div class="no-results" id="no-results" style="display: none;">
+    <div class="container">
+        <div class="nr-icon">🔍</div>
+        <h3>No guides found</h3>
+        <p>Try a different search term or clear your filters.</p>
+    </div>
+</div>

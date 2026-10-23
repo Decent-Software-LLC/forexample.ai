@@ -1,0 +1,29 @@
+# Curated topics shown in the explore page's topic selector.
+# Ordered by popularity (frequency across all guides). Counts are
+# computed at runtime from the cards, so they stay accurate.
+# Add/remove slugs freely — they must match guide tags.
+topics:
+  - applications
+  - techniques
+  - algorithms
+  - computer-vision
+  - mlops
+  - training
+  - optimization
+  - nlp
+  - ensemble
+  - classification
+  - security
+  - monitoring
+  - language-models
+  - deployment
+  - basics
+  - architecture
+  - transformers
+  - prompt-engineering
+  - preprocessing
+  - neural-networks
+  - ethics
+  - creative-ai
+  - reinforcement-learning
+  - gradient-boosting

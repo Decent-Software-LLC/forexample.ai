@@ -1,0 +1,61 @@
+name: Generate AI Guide
+
+on:
+  schedule:
+    # Run daily at 10:17 AM UTC (5:17 AM EST / 2:17 AM PST) - off-peak time
+    - cron: '17 10 * * *'
+  workflow_dispatch:  # Allow manual triggering
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history for proper git operations
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate JSON files
+        run: npm run validate
+
+      - name: Generate new guide
+        env:
+          NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
+        run: npm run generate
+
+      - name: Fix formatting inconsistencies
+        run: |
+          npm run fix-formatting
+          node scripts/fix-horizontal-rules.js
+
+      - name: Check for changes
+        id: git-check
+        run: |
+          git diff --exit-code _guides/ generated-topics.json assets/images/guides/ || echo "changes=true" >> $GITHUB_OUTPUT
+
+      - name: Validate series navigation (informational)
+        if: steps.git-check.outputs.changes == 'true'
+        continue-on-error: true
+        run: npm run validate:series
+
+      - name: Commit and push new guide
+        if: steps.git-check.outputs.changes == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add _guides/ generated-topics.json assets/images/guides/
+          git commit -m "Add new AI guide with FLUX image [automated] - formatting verified"
+          git push

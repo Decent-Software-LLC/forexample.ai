@@ -1,0 +1,178 @@
+---
+layout: default
+---
+
+<article class="guide">
+    <!-- Breadcrumb Navigation -->
+    <div class="container-wide breadcrumbs-wrap">
+        {% include breadcrumbs.html %}
+    </div>
+
+    <header class="guide-header">
+        <div class="container-wide">
+            <div class="guide-meta">
+                <span class="badge difficulty difficulty-{{ page.difficulty }}">{{ page.difficulty | capitalize }}</span>
+                <span class="meta-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+                    {{ page.estimated_time }}
+                </span>
+                <span class="sep" aria-hidden="true"></span>
+                <time class="meta-item" datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %d, %Y" }}</time>
+            </div>
+            <h1 class="guide-title">{{ page.title }}</h1>
+            <p class="guide-description">{{ page.description }}</p>
+            <div class="guide-tags">
+                {% for tag in page.tags %}
+                    <span class="tag">{{ tag | replace: '-', ' ' }}</span>
+                {% endfor %}
+            </div>
+        </div>
+    </header>
+
+    {% if page.image %}
+    <div class="guide-image">
+        <figure>
+            <img src="{{ page.image | relative_url }}" alt="{{ page.title }}" loading="eager">
+            {% if page.image_credit %}
+            <figcaption>
+                Image: <a href="{{ page.image_credit_url }}" target="_blank" rel="noopener">{{ page.image_credit }}</a>
+            </figcaption>
+            {% endif %}
+        </figure>
+    </div>
+    {% endif %}
+
+    <div class="guide-content">
+        <div class="guide-content-wrapper">
+            <!-- Left Sidebar (Desktop only) -->
+            <aside class="guide-sidebar">
+                {% include table-of-contents.html %}
+            </aside>
+
+            <!-- Main Content -->
+            <div class="guide-main-content">
+                <!-- Prerequisites -->
+                {% include prerequisites.html %}
+
+                <!-- Learning Objectives -->
+                {% include learning-objectives.html %}
+
+        {% if page.series %}
+        <nav class="series-navigation">
+            <div class="series-header">
+                <div class="series-title-wrapper">
+                    <span class="series-badge">📚 Part {{ page.series.part }} of {{ page.series.total }}</span>
+                    <h3 class="series-name">{{ page.series.name }}</h3>
+                </div>
+                <div class="series-progress-bar">
+                    <div class="series-progress-fill" style="width: {{ page.series.part | times: 100 | divided_by: page.series.total }}%"></div>
+                </div>
+            </div>
+
+            <div class="series-nav-links">
+                {% if page.series.previous %}
+                <a href="{{ '/guides/' | append: page.series.previous | append: '/' | relative_url }}" class="series-nav-link prev">
+                    <span class="nav-arrow">←</span>
+                    <div class="nav-content">
+                        <span class="nav-label">Previous</span>
+                        <span class="nav-title">{{ page.series.previous | replace: '-', ' ' | capitalize }}</span>
+                    </div>
+                </a>
+                {% elsif page.series.part > 1 %}
+                <div class="series-nav-link prev coming-soon">
+                    <span class="nav-arrow">←</span>
+                    <div class="nav-content">
+                        <span class="nav-label">Previous</span>
+                        <span class="nav-title coming-soon-text">Coming Soon</span>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if page.series.next %}
+                <a href="{{ '/guides/' | append: page.series.next | append: '/' | relative_url }}" class="series-nav-link next">
+                    <div class="nav-content">
+                        <span class="nav-label">Next</span>
+                        <span class="nav-title">{{ page.series.next | replace: '-', ' ' | capitalize }}</span>
+                    </div>
+                    <span class="nav-arrow">→</span>
+                </a>
+                {% elsif page.series.part < page.series.total %}
+                <div class="series-nav-link next coming-soon">
+                    <div class="nav-content">
+                        <span class="nav-label">Next</span>
+                        <span class="nav-title coming-soon-text">Coming Soon</span>
+                    </div>
+                    <span class="nav-arrow">→</span>
+                </div>
+                {% endif %}
+            </div>
+        </nav>
+        {% endif %}
+
+        {{ content }}
+
+        {% if page.series %}
+        <nav class="series-navigation bottom">
+            <div class="series-header">
+                <div class="series-title-wrapper">
+                    <span class="series-badge">📚 Part {{ page.series.part }} of {{ page.series.total }}</span>
+                    <h3 class="series-name">{{ page.series.name }}</h3>
+                </div>
+                <div class="series-progress-bar">
+                    <div class="series-progress-fill" style="width: {{ page.series.part | times: 100 | divided_by: page.series.total }}%"></div>
+                </div>
+            </div>
+
+            <div class="series-nav-links">
+                {% if page.series.previous %}
+                <a href="{{ '/guides/' | append: page.series.previous | append: '/' | relative_url }}" class="series-nav-link prev">
+                    <span class="nav-arrow">←</span>
+                    <div class="nav-content">
+                        <span class="nav-label">Previous</span>
+                        <span class="nav-title">{{ page.series.previous | replace: '-', ' ' | capitalize }}</span>
+                    </div>
+                </a>
+                {% elsif page.series.part > 1 %}
+                <div class="series-nav-link prev coming-soon">
+                    <span class="nav-arrow">←</span>
+                    <div class="nav-content">
+                        <span class="nav-label">Previous</span>
+                        <span class="nav-title coming-soon-text">Coming Soon</span>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if page.series.next %}
+                <a href="{{ '/guides/' | append: page.series.next | append: '/' | relative_url }}" class="series-nav-link next">
+                    <div class="nav-content">
+                        <span class="nav-label">Next</span>
+                        <span class="nav-title">{{ page.series.next | replace: '-', ' ' | capitalize }}</span>
+                    </div>
+                    <span class="nav-arrow">→</span>
+                </a>
+                {% elsif page.series.part < page.series.total %}
+                <div class="series-nav-link next coming-soon">
+                    <div class="nav-content">
+                        <span class="nav-label">Next</span>
+                        <span class="nav-title coming-soon-text">Coming Soon</span>
+                    </div>
+                    <span class="nav-arrow">→</span>
+                </div>
+                {% endif %}
+            </div>
+        </nav>
+        {% endif %}
+            </div><!-- end guide-main-content -->
+        </div><!-- end guide-content-wrapper -->
+    </div><!-- end guide-content container -->
+
+    <footer class="guide-footer container">
+        <a href="{{ '/explore/' | relative_url }}" class="back-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+            Back to All Guides
+        </a>
+    </footer>
+</article>
+
+<!-- Reading Progress Bar -->
+{% include reading-progress.html %}

@@ -1,0 +1,39 @@
+<footer class="site-footer">
+    <div class="container-wide">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <a href="{{ '/' | relative_url }}" class="site-logo" aria-label="{{ site.title }} home">
+                    <span class="logo-mark" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2.5l2.1 5.9 5.9 2.1-5.9 2.1L12 18.5l-2.1-5.9L4 10.5l5.9-2.1L12 2.5z" fill="#fff"/>
+                            <circle cx="18.5" cy="17.5" r="2.4" fill="#fff" opacity="0.9"/>
+                        </svg>
+                    </span>
+                    <span class="logo-text">For&nbsp;Example&nbsp;<span class="accent">AI</span></span>
+                </a>
+                <p>Practical, step-by-step guides to help you understand and build with AI — from first principles to production.</p>
+            </div>
+
+            <div class="footer-col">
+                <h4>Explore</h4>
+                <ul>
+                    <li><a href="{{ '/explore/' | relative_url }}">Browse all guides</a></li>
+                    <li><a href="{{ '/explore/' | relative_url }}">Browse by topic</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Project</h4>
+                <ul>
+                    <li><a href="https://github.com/Decent-Software-LLC/forexample.ai" target="_blank" rel="noopener">GitHub</a></li>
+                    <li><a href="/feed.xml">RSS Feed</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <span>© {{ 'now' | date: "%Y" }} For Example AI. All rights reserved.</span>
+            <span>Built with Jekyll · Guides generated &amp; updated automatically</span>
+        </div>
+    </div>
+</footer>

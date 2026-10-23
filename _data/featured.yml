@@ -1,0 +1,16 @@
+# Curated guides shown on the landing page (in order).
+# `slug` must match the guide's slug (filename without the date prefix).
+# `label` is a short reason to click, shown as a badge on the card.
+featured:
+  - slug: what-is-artificial-intelligence
+    label: Start here
+  - slug: how-chatgpt-works-a-simple-explanation
+    label: Popular
+  - slug: what-is-a-neural-network
+    label: Foundations
+  - slug: understanding-transformer-architecture
+    label: Deep dive
+  - slug: prompt-engineering-for-developers
+    label: Practical
+  - slug: what-is-mlops
+    label: Ship it

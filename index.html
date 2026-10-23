@@ -1,0 +1,75 @@
+---
+layout: default
+title: Home
+---
+
+<!-- ============ HERO ============ -->
+<section class="landing-hero">
+    <div class="container">
+        <span class="hero-eyebrow"><span class="dot"></span> Practical AI education</span>
+        <h1 class="landing-title">Understand AI.<br><span class="grad">Not just read about it.</span></h1>
+        <p class="landing-sub">Step-by-step guides that take you from first principles to working code — no fluff, no hype, just how it actually works.</p>
+        <div class="landing-ctas">
+            <a href="{{ '/explore/' | relative_url }}" class="btn-primary">
+                Browse all {{ site.guides | size }} guides
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+            <a href="{{ '/guides/what-is-artificial-intelligence/' | relative_url }}" class="btn-ghost">Start with the basics</a>
+        </div>
+        <div class="hero-stats">
+            <div class="hero-stat"><b>{{ site.guides | size }}</b><span>Guides</span></div>
+            <div class="hero-stat"><b>{{ site.data.topics.topics | size }}</b><span>Topics</span></div>
+            <div class="hero-stat"><b>3</b><span>Difficulty levels</span></div>
+        </div>
+    </div>
+</section>
+
+<!-- ============ FEATURED GUIDES ============ -->
+<section class="featured-section">
+    <div class="container">
+        <div class="section-head">
+            <div>
+                <h2 class="section-title">Featured guides</h2>
+                <p class="section-sub">Hand-picked starting points to get you going.</p>
+            </div>
+            <a href="{{ '/explore/' | relative_url }}" class="section-link">
+                Browse all guides
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+        </div>
+        <div class="featured-grid">
+            {% for item in site.data.featured.featured %}
+                {% assign g = site.guides | where: "slug", item.slug | first %}
+                {% if g %}
+                    {% include guide-card.html guide=g label=item.label %}
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- ============ TOPIC STRIP ============ -->
+<section class="strip-section">
+    <div class="container">
+        <h2 class="strip-title">Browse by topic</h2>
+        <div class="topic-strip">
+            {% for tag in site.data.topics.topics limit: 12 %}
+                <a class="strip-pill" href="{{ '/explore/' | relative_url }}?tag={{ tag }}">{{ tag | replace: '-', ' ' }}</a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- ============ CTA BAND ============ -->
+<section class="cta-band">
+    <div class="container cta-inner">
+        <div>
+            <h2 class="cta-title">Ready to dive in?</h2>
+            <p class="cta-sub">{{ site.guides | size }} guides, {{ site.data.topics.topics | size }} topics, one clear path from curious to capable.</p>
+        </div>
+        <a href="{{ '/explore/' | relative_url }}" class="btn-primary btn-lg">
+            Explore all guides
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+    </div>
+</section>
