@@ -142,5 +142,6 @@
   "What is Model Pruning?",
   "Understanding Softmax Function",
   "Understanding Precision-Recall Trade-off",
-  "Understanding Graph Neural Networks"
+  "Understanding Graph Neural Networks",
+  "Batch Normalization and Layer Normalization Explained"
 ]
