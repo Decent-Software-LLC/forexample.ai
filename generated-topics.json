@@ -143,5 +143,6 @@
   "Understanding Softmax Function",
   "Understanding Precision-Recall Trade-off",
   "Understanding Graph Neural Networks",
-  "Batch Normalization and Layer Normalization Explained"
+  "Batch Normalization and Layer Normalization Explained",
+  "What is Reinforcement Learning from Human Feedback (RLHF)?"
 ]
