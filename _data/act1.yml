@@ -1,0 +1,96 @@
+# Act I: "What am I?"
+# Everything a writer might tweak lives here: the map, the reader types,
+# the guessing-game sentences, the temperature words, and the quick check.
+# Page prose lives in _story/act-1/*.md.
+
+act: "Act I"
+title: "What am I?"
+total_pages: 4
+
+# Map in the header. x/y are positions in a 196x44 box.
+nodes:
+  - { id: start,      title: "Cover",                url: "/",                   x: 10,  y: 22 }
+  - { id: guesser,    title: "I'm a guesser",        url: "/act-1/guesser/",     x: 52,  y: 22 }
+  - { id: tokens,     title: "I read pieces",        url: "/act-1/tokens/",      x: 98,  y: 9 }
+  - { id: confidence, title: "Why I sound sure",     url: "/act-1/confidence/",  x: 98,  y: 35 }
+  - { id: understand, title: "Do I understand you?", url: "/act-1/understand/",  x: 144, y: 22 }
+  - { id: end,        title: "End of Act I",         url: "/act-1/end/",         x: 186, y: 22 }
+
+edges:
+  - [start, guesser]
+  - [guesser, tokens]
+  - [guesser, confidence]
+  - [tokens, confidence]
+  - [tokens, understand]
+  - [confidence, understand]
+  - [understand, end]
+
+# The reader picks one on the cover. "open" shows on page 1, "close" on the last page.
+personas:
+  - id: curious
+    label: "I'm just curious"
+    sub: "Show me how it works"
+    open: "You said you're curious. Good. This gets stranger the closer you look."
+    close: "You came curious. Act II is where it gets genuinely strange: how a pile of text turns into something that can talk back."
+  - id: worried
+    label: "Honestly, AI worries me"
+    sub: "I want to know what I'm dealing with"
+    open: "You said AI worries you. That's reasonable. People judge things better once they understand them, so let's start there."
+    close: "You came worried. You now know more about how I work than most people who use me every day. That's the best footing for deciding how much to rely on me."
+  - id: skeptical
+    label: "I don't trust what you say"
+    sub: "Convince me, or don't"
+    open: "You said you don't trust what I say. You're about to see exactly why that instinct is useful."
+    close: "You came skeptical. Keep that. Now you know where it matters most: when I sound sure about a fact, check it."
+  - id: teacher
+    label: "I'm explaining AI to someone else"
+    sub: "A kid, a parent, a team"
+    open: "You're here to explain me to someone else. I'll give you things you can actually show them."
+    close: "You came to explain me to someone. Play the guessing game with them. It does more than any definition."
+
+# Page 1 toy: "Be the model". Probabilities are illustrative, not from a real model.
+rounds:
+  - before: "The cat sat on the"
+    after: "."
+    show: [couch, keyboard, mat, windowsill, floor]
+    p: { mat: 0.41, floor: 0.18, couch: 0.12, windowsill: 0.08, keyboard: 0.06 }
+    rest: 0.15
+    note: "You probably picked <b>mat</b>. So did I, mostly. Neither of us has met this cat. We've both just read that sentence many, many times."
+  - before: "Peanut butter and"
+    after: ""
+    show: [honey, jelly, pickles, banana, jam]
+    p: { jelly: 0.62, jam: 0.19, banana: 0.07, honey: 0.04, pickles: 0.01 }
+    rest: 0.07
+    note: "Notice I never put 100% on anything. Even <b>jelly</b> only gets 62%. I always keep some doubt, and then I pick anyway."
+  - before: "The capital of Australia is"
+    after: "."
+    show: [Sydney, Perth, Canberra, Melbourne, Brisbane]
+    p: { Canberra: 0.71, Sydney: 0.19, Melbourne: 0.05, Brisbane: 0.02, Perth: 0.01 }
+    rest: 0.02
+    note: "The right answer is <b>Canberra</b>. But look how much weight I gave Sydney. <mark>I don't look facts up. I predict what text usually says next</mark>, and plenty of text gets this one wrong. Hold on to that. It comes back."
+
+# Page 2b toy: temperature dial. "logit" is the raw score before temperature.
+temperature:
+  prompt: "The best thing about Mondays is"
+  words:
+    - { w: "coffee",            logit: 3.0 }
+    - { w: "that they end",     logit: 2.2 }
+    - { w: "a fresh start",     logit: 1.9 }
+    - { w: "nothing, honestly", logit: 1.6 }
+    - { w: "the quiet office",  logit: 1.0 }
+    - { w: "leftover pizza",    logit: 0.6 }
+    - { w: "watching ducks",    logit: -0.2 }
+    - { w: "tax law",           logit: -1.0 }
+    - { w: "the color purple",  logit: -1.6 }
+
+# Page 3 quick check.
+quiz:
+  - s: "When I answer you, I'm looking the answer up in a database."
+    a: false
+    why: "I predict likely text. That's how a common mistake, like Sydney, sneaks in."
+  - s: "I write one small piece at a time, guessing what comes next."
+    a: true
+    why: "Every answer is a long chain of next-piece guesses."
+  - s: "If I sound confident, I'm probably right."
+    a: false
+    why: "My tone is the same whether I'm right or wrong. Check facts that matter."

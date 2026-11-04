@@ -13,6 +13,9 @@ collections:
   guides:
     output: true
     permalink: /guides/:title/
+  story:
+    output: true
+    permalink: /:path/
 
 # Defaults
 defaults:
@@ -21,6 +24,11 @@ defaults:
       type: "guides"
     values:
       layout: "guide"
+  - scope:
+      path: ""
+      type: "story"
+    values:
+      layout: "story"
 
 # Exclude from processing
 exclude:
