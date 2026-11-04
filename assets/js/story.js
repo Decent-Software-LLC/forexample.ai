@@ -24,6 +24,20 @@
   function persona() { return (DATA.personas || []).filter(function (p) { return p.id === S.persona; })[0]; }
   function seen(id) { return S.visited.indexOf(id) !== -1; }
 
+  /* ---------- analytics ----------
+     Google Analytics events for what happens inside a page. Page views already
+     come from the gtag snippet in the layout. Never send what readers type. */
+  var once = {};
+  function track(name, params, onceKey) {
+    if (onceKey) { if (once[onceKey]) return; once[onceKey] = 1; }
+    try {
+      if (typeof window.gtag !== "function") return;
+      var p = { story_page: HERE, reader_type: S.persona || "none" };
+      for (var k in params) p[k] = params[k];
+      window.gtag("event", name, p);
+    } catch (e) {}
+  }
+
   /* ---------- page chrome ---------- */
   function chrome() {
     // persona line ("open" on page 1, "close" at the end)
@@ -37,9 +51,13 @@
     document.querySelectorAll(".choice[data-to]").forEach(function (a) {
       var to = a.getAttribute("data-to");
       if (a.hasAttribute("data-persona")) {
-        a.addEventListener("click", function () { S.persona = a.getAttribute("data-persona"); save(); });
+        a.addEventListener("click", function () {
+          S.persona = a.getAttribute("data-persona"); save();
+          track("story_reader_type", {});
+        });
         return;
       }
+      a.addEventListener("click", function () { track("story_choice", { choice_to: to, choice_text: a.querySelector("b").textContent }); });
       if (a.hasAttribute("data-hide-if-read") && seen(to)) { a.hidden = true; return; }
       if (seen(to) && to !== "end" && to !== HERE) a.classList.add("seen");
     });
@@ -94,10 +112,19 @@
       }
       box.innerHTML = h;
       box.querySelectorAll(".opt").forEach(function (b) {
-        b.onclick = function () { S.gPicks[i] = b.getAttribute("data-w"); save(); draw(); };
+        b.onclick = function () {
+          var w = b.getAttribute("data-w"), top = Object.keys(r.p).sort(function (x, y) { return r.p[y] - r.p[x]; })[0];
+          S.gPicks[i] = w; save();
+          track("guess_word", { round: i + 1, sentence: r.before, guess: w, matched_model: w === top ? "yes" : "no" });
+          if (i === R.length - 1) {
+            var matches = R.filter(function (rr, k) { return S.gPicks[k] === Object.keys(rr.p).sort(function (x, y) { return rr.p[y] - rr.p[x]; })[0]; }).length;
+            track("guess_game_complete", { matches: matches, rounds: R.length });
+          }
+          draw();
+        };
       });
       if ($("gNext")) $("gNext").onclick = function () { S.gRound = i + 1; save(); draw(); };
-      if ($("gAgain")) $("gAgain").onclick = function () { S.gRound = 0; S.gPicks = []; save(); draw(); };
+      if ($("gAgain")) $("gAgain").onclick = function () { S.gRound = 0; S.gPicks = []; save(); track("guess_game_replay", {}); draw(); };
     }
     draw();
   }
@@ -138,11 +165,20 @@
       $("cToks").textContent = toks.length;
       $("cChars").textContent = (v.match(/[A-Za-zÀ-ɏ]/g) || []).length;
     }
-    inp.addEventListener("input", run);
+    var typed = null;
+    inp.addEventListener("input", function () {
+      run();
+      // one event per page view, after the reader pauses typing; counts only, never the text
+      clearTimeout(typed);
+      typed = setTimeout(function () {
+        track("tokenizer_used", { token_count: $("tokOut").children.length, tokenizer: real ? "o200k_base" : "fallback" }, "tok");
+      }, 1500);
+    });
     var done = false;
     function fallback() {
       if (done) return; done = true;
       note.textContent = "Couldn't load the real tokenizer, so this is a rough stand-in. Real ones learn their splits from huge amounts of text.";
+      track("tokenizer_fallback", {}, "tokfail");
       run();
     }
     var s = document.createElement("script");
@@ -180,7 +216,9 @@
         : "<b>High.</b> I start taking long shots. More creative, and more nonsense.";
     }
     r.addEventListener("input", draw); draw();
+    r.addEventListener("change", function () { track("temperature_changed", { temperature: parseFloat(r.value) }, "temp"); });
     $("tGen").onclick = function () {
+      track("temperature_endings", { temperature: parseFloat(r.value) });
       var d = dist(parseFloat(r.value)), items = [];
       for (var k = 0; k < 5; k++) {
         var x = Math.random(), pick = d[d.length - 1][0];
@@ -202,7 +240,15 @@
           : '<div class="row"><button type="button" data-i="' + i + '" data-v="1">True</button><button type="button" data-i="' + i + '" data-v="0">False</button></div>') + "</div>";
       }).join("");
       box.querySelectorAll("button").forEach(function (b) {
-        b.onclick = function () { S.quiz[b.getAttribute("data-i")] = b.getAttribute("data-v") === "1"; save(); draw(); };
+        b.onclick = function () {
+          var qi = +b.getAttribute("data-i"), v = b.getAttribute("data-v") === "1";
+          S.quiz[qi] = v; save();
+          track("quiz_answer", { question: qi + 1, correct: v === Q[qi].a ? "yes" : "no" });
+          if (Object.keys(S.quiz).length === Q.length) {
+            track("quiz_complete", { score: Q.filter(function (q, k) { return S.quiz[k] === q.a; }).length, questions: Q.length }, "quiz");
+          }
+          draw();
+        };
       });
     }
     draw();
@@ -217,7 +263,16 @@
     var answered = Object.keys(S.quiz).length;
     var score = Q.filter(function (q, i) { return S.quiz[i] === q.a; }).length;
     pathEl.textContent = "Your path: " + ["Cover"].concat(titles, ["End"]).join(" → ") + (answered ? " · Quick check " + score + "/" + Q.length : "");
+    var pathIds = S.visited.filter(function (v) { return v !== "start" && v !== "end"; });
+    // first finish in this browser only, so reloads and rereads don't inflate it
+    if (!S.completed) { S.completed = true; save(); track("act_complete", {
+      act: "act-1",
+      pages_read: pathIds.length,
+      read_path: pathIds.join(">"),
+      quiz_score: answered ? score : -1
+    }); }
     $("copy").onclick = function () {
+      track("card_copied", {});
       var card = $("card"), t = $("toast");
       var text = "What I now know about AI (forexample.ai, Act I)\n" +
         Array.prototype.map.call(card.querySelectorAll("li"), function (li) { return "• " + li.textContent; }).join("\n") +
