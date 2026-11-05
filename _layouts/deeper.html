@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-JZE93KJLKK"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-JZE93KJLKK');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>{{ page.title }} | {{ site.title }}</title>
+    <meta name="description" content="{{ page.description | default: site.description }}">
+    <script>
+      (function(){ try { var t = localStorage.getItem('theme'); if (t) document.documentElement.setAttribute('data-theme', t); } catch(e) {} })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=JetBrains+Mono:wght@400;600&display=swap">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23ea580c'/%3E%3Cpath d='M9 21l4-10h2l4 10h-2.2l-1.2-3.2h-3.2L11.2 21H9zm3.4-4.9h2.4l-1.2-3.3-1.2 3.3z' fill='white'/%3E%3C/svg%3E">
+    <link type="application/atom+xml" rel="alternate" href="{{ '/feed.xml' | relative_url }}" title="{{ site.title }}">
+    <link rel="stylesheet" href="{{ '/assets/css/story.css' | relative_url }}">
+    {% seo %}
+</head>
+{% assign act = site.data.act1 %}{% assign from = site.story | where: "story_id", page.act_page | first %}
+<body class="deeper-page">
+<header class="strip">
+    <a class="brand" href="{{ '/' | relative_url }}"><b>forexample.ai</b><span>{{ act.act }} · {{ act.title }}</span></a>
+</header>
+
+<main>
+<article class="sheet">
+    <p class="eyebrow">Go deeper{% if from %} · from page {{ from.page_no }}{% endif %}{% if page.estimated_time %} · {{ page.estimated_time }}{% endif %}</p>
+    <h1>{{ page.heading | default: page.title }}</h1>
+    <div class="prose" id="deeper-body">
+{{ content }}
+    </div>
+
+    <nav class="turnto" aria-label="Back to the story">
+        <div class="label">Back to the story</div>
+        <div class="choices">
+            {% if from %}<a class="choice" href="{{ from.url | relative_url }}"><span><b>Page {{ from.page_no }}: {{ from.title }}</b><small>Pick up where this note came from.</small></span><span class="arrow" aria-hidden="true">→</span></a>{% endif %}
+            <a class="choice" href="{{ '/' | relative_url }}"><span><b>Start {{ act.act }} from the beginning</b><small>A short book about how I work, told by me. About 10 minutes.</small></span><span class="arrow" aria-hidden="true">→</span></a>
+        </div>
+    </nav>
+
+    <div class="folio"><span>{{ act.act }} · Notes</span><span>{{ page.date | date: "%B %Y" }}</span></div>
+</article>
+</main>
+
+<footer class="colophon">
+    <span>Prefer to browse? <a href="{{ '/library/' | relative_url }}">See every guide in the library</a>.</span>
+</footer>
+</body>
+</html>

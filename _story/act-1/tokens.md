@@ -14,7 +14,8 @@ choices:
     hide_if_read: true
 deeper:
   slug: understanding-tokenization-methods
-  label: "Understanding tokenization methods"
+  label: "Why I read in chunks, not letters"
+  time: "4 min"
 ---
 
 Before I see your message, it gets chopped into chunks called **tokens**. A token is often a whole common word. Sometimes it's part of a word, or a space glued to the front of one. <mark>I never see letters the way you do.</mark>

@@ -15,6 +15,7 @@ choices:
 deeper:
   slug: how-chatgpt-works-a-simple-explanation
   label: "How ChatGPT works, step by step"
+  time: "5 min"
 ---
 
 Here's the most important thing about me. Almost everything else follows from it: <mark>I write by guessing the next word.</mark> Then the next one. Then the next.

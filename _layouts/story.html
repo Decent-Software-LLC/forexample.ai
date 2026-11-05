@@ -64,7 +64,7 @@
     </nav>
     {% endif %}
 
-    {% if page.deeper %}<p class="deeper">Go deeper: <a href="{{ '/guides/' | append: page.deeper.slug | append: '/' | relative_url }}">{{ page.deeper.label }}</a></p>{% endif %}
+    {% if page.deeper %}<a class="deeper" data-deeper href="{{ '/guides/' | append: page.deeper.slug | append: '/' | relative_url }}"><span class="label">Go deeper{% if page.deeper.time %} · {{ page.deeper.time }}{% endif %}</span><b>{{ page.deeper.label }}</b><small>Opens beside this page. You won't lose your place.</small></a>{% endif %}
 
     <div class="folio"><span>{{ act.act }}</span><span>{% if page.page_no %}Page {{ page.page_no }} of {{ act.total_pages }}{% else %}Cover{% endif %}</span></div>
 </article>
@@ -74,6 +74,14 @@
     <span>Your place is saved in this browser. Prefer to browse? <a href="{{ '/library/' | relative_url }}">See every guide in the library</a>.</span>
     <button id="reset" type="button">Start over</button>
 </footer>
+
+<dialog class="drawer" id="drawer" aria-labelledby="drawerTitle">
+    <div class="drawer-bar">
+        <button type="button" class="drawer-back" id="drawerClose">← Back to the story</button>
+        <a class="drawer-open" id="drawerOpen" href="#">Open as a page</a>
+    </div>
+    <div class="drawer-body" id="drawerBody" tabindex="-1"></div>
+</dialog>
 
 <script id="story-data" type="application/json">{{ act | jsonify }}</script>
 <script src="{{ '/assets/js/story.js' | relative_url }}"></script>
