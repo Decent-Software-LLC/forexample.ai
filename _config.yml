@@ -42,6 +42,8 @@ exclude:
   - .github
   - SEO_OPTIMIZATION_PLAN.md
   - CONTENT_STRATEGY.md
+  - notes
+  - api/README.md
 
 # Include special directories
 include:
