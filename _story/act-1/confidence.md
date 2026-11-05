@@ -14,7 +14,8 @@ choices:
     hide_if_read: true
 deeper:
   slug: what-can-ai-do-current-capabilities-and-limitations
-  label: "What AI can and can't do"
+  label: "What I'm good at, and where I slip"
+  time: "4 min"
 ---
 
 Remember those bars from the guessing game? Every time I write a word, I pick from a list like that. How adventurous I am when I pick is set by a dial called **temperature**.

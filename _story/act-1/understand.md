@@ -10,7 +10,8 @@ choices:
     sub: "See what you now know"
 deeper:
   slug: what-is-artificial-intelligence
-  label: "What is artificial intelligence?"
+  label: 'Where I fit inside the word "AI"'
+  time: "4 min"
 ---
 
 It depends what you mean by "understand," and the people who build me genuinely argue about it. I won't pretend to settle it. Here's what I can tell you for certain.

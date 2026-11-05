@@ -286,6 +286,71 @@
     };
   }
 
+  /* ---------- "Go deeper" side panel ----------
+     The link is a normal link to the note's own page (which works on its own,
+     from search or with no JS). Here we open that page's #deeper-body in a
+     <dialog> instead, so the reader never leaves the story. The phone's back
+     button closes the panel. */
+  function mountDeeper() {
+    var link = document.querySelector("a[data-deeper]"), dlg = $("drawer");
+    if (!link || !dlg || typeof dlg.showModal !== "function" || !window.fetch || !window.DOMParser) return;
+    var body = $("drawerBody"), slug = link.pathname.split("/").filter(Boolean).pop();
+    var cache = null, pending = null, pushed = false, openedAt = 0;
+    $("drawerOpen").href = link.href;
+    if (location.hash === "#deeper") history.replaceState(null, "", location.pathname + location.search);
+
+    function load() {
+      if (cache) return Promise.resolve(cache);
+      if (pending) return pending;
+      pending = fetch(link.href, { credentials: "same-origin" }).then(function (r) {
+        if (!r.ok) throw new Error(r.status);
+        return r.text();
+      }).then(function (t) {
+        var doc = new DOMParser().parseFromString(t, "text/html");
+        var b = doc.getElementById("deeper-body"), eb = doc.querySelector(".eyebrow"), h = doc.querySelector("h1");
+        if (!b) throw new Error("no body");
+        cache = '<p class="eyebrow">' + (eb ? eb.innerHTML : "Go deeper") + "</p>" +
+          '<h1 id="drawerTitle">' + (h ? h.innerHTML : "") + "</h1>" +
+          '<div class="prose">' + b.innerHTML + "</div>";
+        return cache;
+      });
+      pending.catch(function () { pending = null; });
+      return pending;
+    }
+
+    function open() {
+      body.innerHTML = '<p class="loading">Opening…</p>';
+      dlg.showModal();
+      document.documentElement.classList.add("drawer-lock");
+      history.pushState({ deeper: 1 }, "", "#deeper"); pushed = true;
+      openedAt = Date.now();
+      track("deeper_open", { guide: slug });
+      load().then(function (html) {
+        body.innerHTML = html; body.scrollTop = 0; body.focus();
+      }, function () {
+        location.href = link.href;  // couldn't fetch it: just go to the page
+      });
+    }
+
+    link.addEventListener("pointerenter", function () { load().catch(function () {}); });
+    link.addEventListener("click", function (e) {
+      if (e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;  // new tab etc. stays a normal link
+      e.preventDefault(); open();
+    });
+    $("drawerClose").addEventListener("click", function () { dlg.close(); });
+    dlg.addEventListener("click", function (e) { if (e.target === dlg) dlg.close(); });  // tap on the dimmed backdrop
+    dlg.addEventListener("close", function () {
+      document.documentElement.classList.remove("drawer-lock");
+      track("deeper_close", { guide: slug, seconds_open: Math.round((Date.now() - openedAt) / 1000) });
+      if (pushed) { pushed = false; history.back(); }
+      link.focus();
+    });
+    window.addEventListener("popstate", function () {
+      if (dlg.open) { pushed = false; dlg.close(); }
+    });
+  }
+
   chrome();
+  mountDeeper();
   mountGuess(); mountTokens(); mountTemp(); mountQuiz(); mountEnd();
 })();
